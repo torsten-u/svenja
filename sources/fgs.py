@@ -9,7 +9,9 @@ BASE = "https://www.fgs.de"
 
 FEED_NAME = "fgs.xml"
 FEED_TITLE = "FGS – Steuerrecht"
-FEED_DESCRIPTION = "Aktuelle Beiträge zum Steuerrecht von Flick Gocke Schaumburg"
+FEED_DESCRIPTION = (
+    "Aktuelle Beiträge zum Steuerrecht von Flick Gocke Schaumburg"
+)
 
 
 def clean(text):
@@ -28,7 +30,9 @@ def get_articles():
 
     articles = []
 
-    date_pattern = re.compile(r"\d{2}\.\d{2}\.\d{4}")
+    date_pattern = re.compile(
+        r"\d{2}\.\d{2}\.\d{4}"
+    )
 
     link_pattern = re.compile(
         r'<a[^>]+href="(/news-and-insights/blog/detail/[^"]+)"[^>]*>(.*?)</a>',
@@ -49,7 +53,11 @@ def get_articles():
         if not dates:
             continue
 
-        date = datetime.strptime(dates[-1], "%d.%m.%Y")
+        date = datetime.strptime(
+            dates[-1],
+            "%d.%m.%Y"
+        )
+
         link = urljoin(BASE, href)
 
         articles.append({
@@ -58,10 +66,16 @@ def get_articles():
             "date": date,
         })
 
+    # FGS verlinkt denselben Artikel mehrfach:
+    # zuerst mit der echten Überschrift, danach mit dem Teaser.
+    # Deshalb beim gleichen Link immer den ERSTEN Treffer behalten.
     unique = {}
 
     for article in articles:
-        unique[article["link"]] = article
+        unique.setdefault(
+            article["link"],
+            article
+        )
 
     return sorted(
         unique.values(),
