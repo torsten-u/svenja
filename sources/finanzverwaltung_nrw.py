@@ -8,34 +8,17 @@ URL = "https://www.finanzverwaltung.nrw.de/uebersicht-rubrik-aktuelles-und-press
 BASE = "https://www.finanzverwaltung.nrw.de"
 
 FEED_NAME = "finanzverwaltung-nrw.xml"
-FEED_TITLE = "Finanzverwaltung NRW – Steuerrelevantes"
+FEED_TITLE = "Finanzverwaltung NRW – Pressemitteilungen"
 FEED_DESCRIPTION = (
-    "Ausgewählte steuerrelevante Pressemitteilungen der Finanzverwaltung NRW"
+    "Pressemitteilungen der Finanzverwaltung NRW; nur klar fachfremde Themen werden ausgeblendet"
 )
 
-INCLUDE = [
-    "steuer",
-    "finanzamt",
-    "finanzämter",
-    "elster",
-    "einkommensteuer",
-    "lohnsteuer",
-    "umsatzsteuer",
-    "mehrwertsteuer",
-    "körperschaftsteuer",
-    "gewerbesteuer",
-    "grundsteuer",
-    "grunderwerbsteuer",
-    "erbschaftsteuer",
-    "schenkungsteuer",
-    "steuererklärung",
-    "betriebsprüfung",
-    "steuerfahndung",
-    "steuerbetrug",
-    "steuerhinterziehung",
-    "steuerbescheid",
-    "abgabenordnung",
-    "steuerveranlagung",
+# Bewusst sehr kurzer Negativfilter: Im Zweifel kommt eine Meldung in den Feed.
+EXCLUDE = [
+    "landesanleihe",
+    "landesschatzanweisung",
+    "kapitalmarkt",
+    "ratingagentur",
 ]
 
 
@@ -47,7 +30,7 @@ def clean(text):
 
 def relevant(text):
     text = text.lower()
-    return any(term in text for term in INCLUDE)
+    return not any(term in text for term in EXCLUDE)
 
 
 def get_articles():
